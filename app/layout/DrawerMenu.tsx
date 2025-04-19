@@ -8,6 +8,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import ThemeBtn from "../components/ThemeBtn";
 import { useDispatch } from "react-redux";
 import { closeDrawer } from "../redux/actions/drawerAction";
+import useUserStore from "../store/useStore";
 
 const MenuItems = [
   {
@@ -32,8 +33,29 @@ const DrawerMenu = () => {
   const dispatch = useDispatch();
 
   const { colors }: { colors: any } = theme;
+  const userDataStore = useUserStore((state: any) => state.user);
+  const clearUserData = useUserStore((state: any) => state.clearUserData);
+
 
   const navigation = useNavigation<any>();
+  // const initials = userDataStore.user.full_name
+  //   .split(' ')
+  //   .map((name: string) => name[0])
+  //   .join('')
+  //   .toUpperCase()
+  //   .substring(0, 2);
+
+  const handleMenuItemPress = (item: any) => {
+    dispatch(closeDrawer());
+
+    // If logout is clicked, clear user data from store
+    if (item.name === "Logout") {
+      clearUserData();
+      navigation.navigate("SingIn");
+    }
+
+    navigation.navigate(item.navigate);
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -55,15 +77,34 @@ const DrawerMenu = () => {
             marginHorizontal: -15,
             paddingHorizontal: 15,
           }}>
-          <Image
-            source={IMAGES.small6}
-            style={{
-              height: 60,
-              width: 60,
-              borderRadius: 10,
-              marginRight: 10,
-            }}
-          />
+             <View style={{
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: COLORS.primaryLight,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 10,
+            borderWidth: 2,
+            borderColor: COLORS.primary,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}>
+            <Text style={{
+              ...FONTS.h1,
+              color: COLORS.primary,
+              fontSize: 28,
+              fontWeight: 'bold',
+            }}>{
+              userDataStore?.full_name?.split(' ').map((name: string) => name[0]).join('').toUpperCase().substring(0, 2)
+              }</Text>
+          </View>
           <View
             style={{
               flex: 1,
@@ -73,30 +114,25 @@ const DrawerMenu = () => {
                 FONTS.fontSemiBold,
                 { color: colors.title, fontSize: 18 },
               ]}>
-              James Smith
+              {userDataStore?.full_name}
             </Text>
             <Text
               style={[
                 FONTS.fontRegular,
                 { color: COLORS.primary, fontSize: 15 },
               ]}>
-              example@gmail.com
+              {userDataStore?.mobile_no}
             </Text>
           </View>
           <View style={{ position: "absolute", right: 10, top: 0 }}>
-            <ThemeBtn />
+            {/* <ThemeBtn /> */}
           </View>
         </View>
         <View style={{ flex: 1, paddingVertical: 15 }}>
           {MenuItems.map((data, index) => {
             return (
               <TouchableOpacity
-                onPress={() => {
-                  data.navigate === "DrawerNavigation"
-                    ? dispatch(closeDrawer())
-                    : dispatch(closeDrawer());
-                  navigation.navigate(data.navigate);
-                }}
+                onPress={() => handleMenuItemPress(data)}
                 key={index}
                 style={{
                   flexDirection: "row",
@@ -160,7 +196,7 @@ const DrawerMenu = () => {
           }}>
           <Text
             style={[FONTS.fontSemiBold, { color: colors.title, fontSize: 13 }]}>
-            cablepilot <Text style={[FONTS.fontRegular]}>Ecommerce Store</Text>
+            Cable Pilot
           </Text>
           <Text
             style={[FONTS.fontRegular, { color: colors.title, fontSize: 13 }]}>

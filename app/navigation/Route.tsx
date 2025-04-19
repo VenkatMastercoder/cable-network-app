@@ -1,15 +1,16 @@
-import React from 'react';
-import StackNavigator from './StackNavigator';
-import { ThemeContextProvider } from '../constants/ThemeContext';
+import React from "react";
+import StackNavigator from "./StackNavigator";
+import { ThemeContextProvider } from "../constants/ThemeContext";
+import QueryClientProvider from "../lib/QueryClientProvider";
 
 const Route = () => {
-
-	return (
-		<ThemeContextProvider>
-			<StackNavigator/> 
-		</ThemeContextProvider>
-	)
-  
-}
+  return (
+    <ThemeContextProvider>
+      <QueryClientProvider>
+        <StackNavigator />
+      </QueryClientProvider>
+    </ThemeContextProvider>
+  );
+};
 
 export default Route;

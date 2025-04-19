@@ -1,16 +1,18 @@
 import { useNavigation, useTheme } from '@react-navigation/native';
-import React from 'react'
-import { View, Text ,TouchableOpacity,Image,ScrollView, SectionList} from 'react-native'
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, SectionList, StyleSheet, ActivityIndicator, TextInput, Modal } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { IMAGES } from '../../constants/Images';
-import { COLORS,FONTS, SIZES } from '../../constants/theme';
-//import { Ionicons } from '@expo/vector-icons';
+import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from '../../redux/actions/drawerAction';
+import useUserStore from '../../store/useStore';
+import { useProfileQuery, useUpdateProfileMutation } from '../../api/profile/mutations';
+import { ProfileUpdateData } from '../../api/profile/mutations';
 
 const btnData = [
   {
@@ -82,169 +84,376 @@ const ListwithiconData = [
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 
-const Profile = ({navigation} : ProfileScreenProps) => {
-
+const Profile = ({ navigation }: ProfileScreenProps) => {
   const theme = useTheme();
-  const { colors } : {colors : any} = theme;
+  const { colors }: { colors: any } = theme;
+  const user = useUserStore((state) => state.user);
 
-  //const navigation = useNavigation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedProfile, setUpdatedProfile] = useState<ProfileUpdateData>({
+    full_name: '',
+    email_id: '',
+    mobile_no: '',
+    communication_address: '',
+    service_address: ''
+  });
 
-  const dispatch = useDispatch();
+  // Fetch profile data
+  const { data, isLoading, isError } = useProfileQuery(user?.user_id || '');
 
+  // Update profile mutation
+  const updateProfileMutation = useUpdateProfileMutation();
+  const setUser = useUserStore((state) => state.setUser);
 
-  return (
-      <View style={{backgroundColor:colors.background,flex:1}}>
-        <View style={{height:60,backgroundColor:COLORS.primary}}>
-            <View style={[GlobalStyleSheet.container,{paddingHorizontal:20}]}>
-                <View style={[GlobalStyleSheet.row,{alignItems:'center',justifyContent:'space-between'}]}>
-                    <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
-                        <TouchableOpacity
-                            style={{margin:5}}
-                            onPress={() => dispatch(openDrawer())}
-                        >
-                            <Image
-                                style={{height:22,width:22,tintColor:COLORS.card,resizeMode:'contain'}}
-                                source={IMAGES.grid5}
-                            />
-                        </TouchableOpacity>
-                        <Image
-                            style={{resizeMode:'contain',width:114,height:25}}
-                            source={IMAGES.appname}
-                        />
-                    </View>
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Search')} 
-                            style={{
-                                height:35,
-                                width:35,
-                                // borderRadius:8,
-                                // backgroundColor:theme.dark ? 'rgba(255,255,255,0.10)' : COLORS.background,
-                                alignItems:'center',
-                                justifyContent:'center'
-                            }}
-                        >
-                            <Image
-                            style={{height:22,width:22,tintColor:COLORS.card,resizeMode:'contain'}}
-                            source={IMAGES.search}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Notification')} 
-                            style={{
-                                height:35,
-                                width:35,
-                                // borderRadius:8,
-                                // backgroundColor:theme.dark ? 'rgba(255,255,255,0.10)' : COLORS.background,
-                                alignItems:'center',
-                                justifyContent:'center'
-                            }}
-                        >
-                            <Image
-                            style={{height:20,width:20,tintColor:COLORS.card,resizeMode:'contain'}}
-                            source={IMAGES.ball}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </View>
-        <View style={[GlobalStyleSheet.container,{paddingTop:20,backgroundColor:theme.dark ? 'rgba(255,255,255,.1)':colors.card}]}> 
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingBottom: 20 }}>
-                <Image
-                    style={{ height: 40, width: 40, borderRadius: 50 }}
-                    source={IMAGES.small6}
-                />
-                <Text style={{ ...FONTS.fontRegular, fontSize: 20, color: colors.title }}>James Smith</Text>
-            </View>
-            <View style={GlobalStyleSheet.row}>
-                {btnData.map((data:any,index) => {
-                    return(
-                        <View key={index} 
-                            style={[GlobalStyleSheet.col50,{marginBottom:10,paddingHorizontal:5}]}>
-                            <TouchableOpacity
-                            onPress={() => navigation.navigate(data.navigate)}
-                            style={{
-                                height:46,
-                                width:'100%',
-                                backgroundColor:colors.card,
-                                borderWidth:1,
-                                borderColor:COLORS.primaryLight,
-                                //borderRadius:8,
-                                alignItems:'center',
-                                justifyContent:'center'
-                            }}
-                            >
-                                <Text style={[FONTS.fontMedium,{fontSize:16,color:colors.title}]}>{data.title}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )
-                })}
-            </View>
-        </View>
-        <View style={[GlobalStyleSheet.container,{flex:1,paddingTop:0}]}>
-            <View style={{ marginHorizontal: -15, marginTop: 0, flex: 1 }}>
-                <SectionList
-                    sections={ListwithiconData}
-                    keyExtractor={(item:any, index) => item + index}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            activeOpacity={.8}
-                            onPress={() => navigation.navigate(item.navigate)}
-                            style={{
-                                flexDirection: 'row',
-                                paddingHorizontal:15,
-                                height: 48,
-                                alignItems: 'center',
-                                paddingVertical: 15,
-                                //borderRadius: SIZES.radius,
-                                backgroundColor:theme.dark ? 'rgba(255,255,255,.1)':colors.card,
-            
-                            }}
-                        >
-                            <View style={{
-                                height: 30,
-                                width: 30,
-                                borderRadius: 6,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginRight: 10,
-                            }}>
-                                <Image
-                                    style={{
-                                        height:20,
-                                        width:20,
-                                        tintColor:COLORS.primary,
-                                        resizeMode:'contain',
-                                    }}
-                                    source={item.icon}
-                                />
-                            </View>
-                            <Text style={{...FONTS.fontRegular,fontSize:16,color:colors.title,flex:1}}>{item.title}</Text>
-                            <FeatherIcon size={22} color={colors.title} name={'chevron-right'} />
-                            {/* <Ionicons  style={{opacity:.8}} color={colors.title} name='chevron-forward' size={20}/> */}
-                        </TouchableOpacity>
-                    )}
-                    renderSectionHeader={({ section: { title } }) => (
-                        <Text 
-                            style={{
-                                 ...FONTS.fontMedium,
-                                  fontSize: 20,
-                                   color: colors.title,
-                                    paddingLeft: 20,
-                                    paddingVertical:10,
-                                    backgroundColor:theme.dark ? 'rgba(255,255,255,.1)' : COLORS.white,
-                                    borderBottomWidth:1,
-                                    borderBottomColor:COLORS.primaryLight,
-                                    marginTop:10
-                             }}
-                        >{title}</Text>
-                    )}
-                />
-            </View>
+  // Initialize form data when profile data is loaded
+  React.useEffect(() => {
+    if (data?.data) {
+      setUpdatedProfile({
+        full_name: data.data.full_name,
+        email_id: data.data.email_id,
+        mobile_no: data.data.mobile_no,
+        communication_address: data.data.communication_address,
+        service_address: data.data.service_address
+      });
+    }
+  }, [data]);
+
+  const handleSaveProfile = () => {
+    if (!user?.user_id) return;
+
+    updateProfileMutation.mutate({
+      user_id: user.user_id,
+      profileData: updatedProfile
+    }, {
+      onSuccess: () => {
+        // Update Zustand store with the updated profile data
+        if (user) {
+          setUser({
+            ...user,
+            full_name: updatedProfile.full_name,
+            email_id: updatedProfile.email_id,
+            mobile_no: updatedProfile.mobile_no,
+            communication_address: updatedProfile.communication_address,
+            service_address: updatedProfile.service_address
+          });
+        }
+        setIsEditing(false);
+      }
+    });
+  };
+
+  const handleInputChange = (field: keyof ProfileUpdateData, value: string) => {
+    setUpdatedProfile(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Header title="Profile" titleLeft={true} leftIcon="back" />
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={[styles.loaderText, { color: colors.text }]}>Loading profile...</Text>
         </View>
       </View>
-  )
-}
+    );
+  }
 
-export default Profile
+  if (isError) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Header title="Profile" titleLeft={true} leftIcon="back" />
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: colors.text }]}>Could not load profile. Please try again later.</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (!data?.data) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Header title="Profile" titleLeft={true} leftIcon="back" />
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.text }]}>No profile data found.</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const profileData = data.data;
+  const initials = profileData.full_name
+    .split(' ')
+    .map((name: string) => name[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Header
+        title="Profile"
+        titleLeft={true}
+        leftIcon="back"
+      />
+
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ alignItems: 'center', paddingVertical: 20, backgroundColor: '#4eacea' }}>
+          <View style={{
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: COLORS.white,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 10
+          }}>
+            <Text style={{ ...FONTS.h1, color: COLORS.primary }}>{initials}</Text>
+          </View>
+        </View>
+
+        {isEditing ? (
+          <View style={[GlobalStyleSheet.container]}>
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Full Name</Text>
+                <TextInput
+                  style={styles.input}
+                  value={updatedProfile.full_name}
+                  onChangeText={(text) => handleInputChange('full_name', text)}
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Account No.</Text>
+                <Text style={styles.value}>{profileData.account_no}</Text>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email Id</Text>
+                <TextInput
+                  style={styles.input}
+                  value={updatedProfile.email_id}
+                  onChangeText={(text) => handleInputChange('email_id', text)}
+                  keyboardType="email-address"
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Mobile No.</Text>
+                <TextInput
+                  style={styles.input}
+                  value={updatedProfile.mobile_no}
+                  onChangeText={(text) => handleInputChange('mobile_no', text)}
+                  keyboardType="phone-pad"
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Communication Address</Text>
+                <TextInput
+                  style={[styles.input, styles.multilineInput]}
+                  value={updatedProfile.communication_address}
+                  onChangeText={(text) => handleInputChange('communication_address', text)}
+                  multiline
+                />
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Service Address</Text>
+                <TextInput
+                  style={[styles.input, styles.multilineInput]}
+                  value={updatedProfile.service_address}
+                  onChangeText={(text) => handleInputChange('service_address', text)}
+                  multiline
+                />
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, styles.cancelButton]}
+                  onPress={() => setIsEditing(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, styles.submitButton]}
+                  onPress={handleSaveProfile}
+                  disabled={updateProfileMutation.isPending}
+                >
+                  {updateProfileMutation.isPending ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.submitButtonText}>Save</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View style={[GlobalStyleSheet.container]}>
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Full Name</Text>
+              <Text style={styles.value}>{profileData.full_name}</Text>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Account No.</Text>
+              <Text style={styles.value}>{profileData.account_no}</Text>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Email Id</Text>
+              <View style={styles.editableValue}>
+                <Text style={styles.value}>{profileData.email_id}</Text>
+              </View>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Mobile No.</Text>
+              <View style={styles.editableValue}>
+                <Text style={styles.value}>{profileData.mobile_no}</Text>
+              </View>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Communication Address</Text>
+              <Text style={styles.value}>{profileData.communication_address}</Text>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Service Address</Text>
+              <Text style={styles.value}>{profileData.service_address}</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.editProfileButton}
+              onPress={() => setIsEditing(true)}
+            >
+              <Text style={styles.editProfileButtonText}>EDIT PROFILE</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  infoContainer: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  label: {
+    ...FONTS.fontRegular,
+    fontSize: 14,
+    color: '#777',
+    marginBottom: 5,
+  },
+  value: {
+    ...FONTS.fontMedium,
+    fontSize: 16,
+    color: '#333',
+  },
+  editableValue: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  editProfileButton: {
+    backgroundColor: COLORS.primary,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 20,
+    borderRadius: 8,
+  },
+  editProfileButtonText: {
+    ...FONTS.fontBold,
+    fontSize: 16,
+    color: COLORS.white,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    marginTop: 10,
+    ...FONTS.font,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    ...FONTS.font,
+    color: 'red',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    ...FONTS.font,
+  },
+  formContainer: {
+    marginBottom: 20,
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    ...FONTS.font,
+    fontSize: 16,
+  },
+  multilineInput: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#f5f5f5',
+  },
+  submitButton: {
+    backgroundColor: COLORS.primary,
+  },
+  cancelButtonText: {
+    color: '#333',
+    ...FONTS.fontMedium,
+  },
+  submitButtonText: {
+    color: COLORS.white,
+    ...FONTS.fontMedium,
+  },
+})
+
+export default Profile;

@@ -5,6 +5,7 @@ export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
     Demo: undefined;
     Bills: undefined;
+    BillDetails: { billNo: string };
     Tickets: undefined;
     Chat: undefined;
     ChooseLanguage: undefined;
@@ -14,7 +15,7 @@ export type RootStackParamList = {
     Login: undefined;
     Register: undefined;
     ForgotPassword: undefined;
-    OTPAuthentication: undefined;
+    OTPAuthentication: { otpId: string; mobile_number: string };
     ResetPassword: undefined;
     Settings: undefined;
     ChangePassword: undefined;

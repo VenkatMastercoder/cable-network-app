@@ -2,9 +2,9 @@ import { Dimensions } from "react-native";
 const {width,height} = Dimensions.get('screen');
 
 export const COLORS = {
-	primary: "#2874F0",
+	primary: "#e00393",
 	primaryLight: "#DFE7F4",
-	secondary: "#FFE019",
+	secondary: "#D62C89",
 	success: "#159E42",
 	danger: "#FF3131",
 	warning: "#ffb02c",
@@ -15,7 +15,9 @@ export const COLORS = {
 	label: "#8A8A8A",
 	backgroundColor: "#fff",
 	black: "#000",
-	
+	gray: '#808080',
+	lightGray: '#D3D3D3',
+
 	//light theme
 	card : "#fff",
 	background : "#F2F3F8",
@@ -23,7 +25,7 @@ export const COLORS = {
 	title : "#000000",
 	borderColor : "rgba(0,0,0,.1)",
 	input : "rgba(0,0,0,.03)",
-	
+
 	//dark theme
 	darkCard : "rgba(255,255,255,.05)",
 	darkBackground : "rgba(0,3,3,.9)",

@@ -1,3 +1,4 @@
+import React from 'react';
 import 'react-native-gesture-handler';
 import Route from './app/navigation/Route';
 import { useFonts } from 'expo-font';
@@ -6,9 +7,12 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux'
 import store from './app/redux/store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
+import Tickets from './app/screens/Tickets/Tickets';
 
 export default function App() {
-  
+
 
   const theme = useTheme();
   const { colors } : {colors : any} = theme;
@@ -20,13 +24,14 @@ export default function App() {
     JostMedium : require('./app/assets/fonts/Jost-Medium.ttf'),
     JostRegular : require('./app/assets/fonts/Jost-Regular.ttf'),
     JostExtraLight : require('./app/assets/fonts/Jost-ExtraLight.ttf'),
-  });  
+  });
 
   if(!loaded){
     return null;
   }
   return (
-    <SafeAreaProvider>
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaProvider>
         <SafeAreaView
           style={{
             flex: 1,
@@ -38,6 +43,14 @@ export default function App() {
               <Route/>
             </Provider>
         </SafeAreaView>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

@@ -8,6 +8,7 @@ import BillsScreen from "../screens/Bills/Bills";
 import TicketsScreen from "../screens/Tickets/Tickets";
 import ChatScreen from "../screens/Chat/Chat";
 import BottomMenu from "../layout/BottomMenu";
+import Singlechat from "../screens/Chat/Singlechat";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -24,7 +25,7 @@ const BottomNavigation = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Bills" component={BillsScreen} />
       <Tab.Screen name="Tickets" component={TicketsScreen} />
-      <Tab.Screen name="Chat" component={ChatScreen} />
+      <Tab.Screen name="Support" component={Singlechat} />
     </Tab.Navigator>
   );
 };

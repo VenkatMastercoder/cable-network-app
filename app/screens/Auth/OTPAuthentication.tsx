@@ -1,38 +1,122 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   TouchableOpacity,
-  Image,
   ScrollView,
-  StatusBar,
 } from "react-native";
-import { COLORS, FONTS, SIZES } from "../../constants/theme";
+import { COLORS, FONTS } from "../../constants/theme";
 import { GlobalStyleSheet } from "../../constants/StyleSheet";
 import { useTheme } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-//import FeatherIcon from 'react-native-vector-icons/Feather';
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
-import Input from "../../components/Input/Input";
-import { IMAGES } from "../../constants/Images";
-import Button from "../../components/Button/Button";
 import OTPInput from "../../components/Input/OTPInput";
-//import OTPInputView from '@twotalltotems/react-native-otp-input'
+import Button from "../../components/Button/Button";
+import * as Burnt from "burnt";
+import {
+  useVerifyOtpMutation,
+  useResendOtpMutation,
+} from "../../api/auth/login/mutations";
 
 type OTPAuthenticationScreenProps = StackScreenProps<
   RootStackParamList,
   "OTPAuthentication"
 >;
 
-const OTPAuthentication = ({ navigation }: OTPAuthenticationScreenProps) => {
+const OTPAuthentication = ({
+  route,
+  navigation,
+}: OTPAuthenticationScreenProps) => {
+  const { otpId, mobile_number } = route.params;
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
   const [otpCode, setOTPCode] = useState("");
   const [isPinReady, setIsPinReady] = useState(false);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+  const [resendTimer, setResendTimer] = useState(30);
   const maximumCodeLength = 6;
+
+  const { mutateAsync: verifyOtp, isPending } = useVerifyOtpMutation();
+  const { mutateAsync: resendOtp } = useResendOtpMutation();
+
+  useEffect(() => {
+    let timer: any;
+    if (isResendDisabled) {
+      timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev === 1) {
+            clearInterval(timer);
+            setIsResendDisabled(false);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isResendDisabled]);
+
+  const verifyOTP = async () => {
+    try {
+      const response = await verifyOtp({ otpId, otpCode });
+
+      if (response.success) {
+        navigation.navigate("DrawerNavigation", { screen: "Home" });
+      } else {
+        Burnt.toast({
+          title: "Invalid OTP",
+          message: "Invalid OTP. Please try again.",
+          preset: "done",
+          haptic: "warning",
+        });
+      }
+    } catch (error:any) {
+      Burnt.toast({
+        title: error.response.data.message || "An error occurred",
+        message: error.response.data.message || "An error occurred. Please try again.",
+        preset: "done",
+        haptic: "error",
+      });
+    }
+  };
+
+  const resendOTP = async () => {
+    setIsResendDisabled(true);
+    try {
+      const response = await resendOtp({ otpId });
+
+
+      if (response.success) {
+        Burnt.toast({
+          title: "OTP Resent",
+          message: "OTP Resent Successfully.",
+          preset: "done",
+          haptic: "success",
+        });
+        setIsResendDisabled(true);
+        setResendTimer(30);
+      } else {
+        Burnt.toast({
+          title: "Please try again.",
+          message: "Please try again.",
+          preset: "done",
+          haptic: "error",
+        });
+        setIsResendDisabled(false);
+      }
+    } catch (error:any) {
+      Burnt.toast({
+        title: error.response.data.message || "An error occurred",
+        message: "An error occurred. Please try again.",
+        preset: "done",
+        haptic: "error",
+      });
+      setIsResendDisabled(false);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
@@ -43,10 +127,7 @@ const OTPAuthentication = ({ navigation }: OTPAuthenticationScreenProps) => {
             { alignItems: "center", justifyContent: "space-between" },
           ]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              //style={[styles.actionBtn,{}]}
-            >
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Feather size={24} color={COLORS.card} name={"arrow-left"} />
             </TouchableOpacity>
             <Text
@@ -54,9 +135,6 @@ const OTPAuthentication = ({ navigation }: OTPAuthenticationScreenProps) => {
               OTP
             </Text>
           </View>
-          {/* <TouchableOpacity>
-                    <Text style={[FONTS.fontRegular,{fontSize:16,color:colors.card,textDecorationLine:'underline'}]}>Skip</Text>
-                </TouchableOpacity> */}
         </View>
       </View>
       <View
@@ -78,7 +156,7 @@ const OTPAuthentication = ({ navigation }: OTPAuthenticationScreenProps) => {
                 FONTS.fontMedium,
                 { fontSize: 18, color: COLORS.primary },
               ]}>
-              +91 897654123
+              {mobile_number}
             </Text>
             <View
               style={{
@@ -103,26 +181,33 @@ const OTPAuthentication = ({ navigation }: OTPAuthenticationScreenProps) => {
                   maximumLength={maximumCodeLength}
                   setIsPinReady={setIsPinReady}
                 />
-                {/* <StatusBar barStyle={'light-content'}/> */}
               </View>
             </View>
-            <TouchableOpacity style={{ paddingTop: 0 }}>
+            <TouchableOpacity
+              style={{ paddingTop: 0 }}
+              onPress={resendOTP}
+              disabled={isResendDisabled}>
               <Text
                 style={[
                   FONTS.fontMedium,
-                  { fontSize: 12, color: COLORS.primary, textAlign: "right" },
+                  {
+                    fontSize: 12,
+                    color: isResendDisabled ? COLORS.gray : COLORS.primary,
+                    textAlign: "right",
+                  },
                 ]}>
-                Resend OTP
+                {isResendDisabled
+                  ? `Resend OTP in ${resendTimer}s`
+                  : "Resend OTP"}
               </Text>
             </TouchableOpacity>
           </ScrollView>
-          <View style={{}}>
+          <View>
             <Button
-              title={"Continue"}
-              //onPress={() => navigation.navigate('OTPAuthentication')}
-              onPress={() =>
-                navigation.navigate("DrawerNavigation", { screen: "Home" })
-              }
+              title={isPending ? "Please wait..." : "Continue"}
+              onPress={verifyOTP}
+              disabled={isPending || otpCode.length !== maximumCodeLength}
+              text={COLORS.white}
             />
           </View>
         </View>

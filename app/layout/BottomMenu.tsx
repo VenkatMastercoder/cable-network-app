@@ -184,6 +184,12 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                         ? IMAGES.heart2
                         : label === "Profile"
                         ? IMAGES.small6
+                        : label === "Support"
+                        ? IMAGES.technicalsupport
+                        : label === "Bills"
+                        ? IMAGES.card2
+                        : label === "Tickets"
+                        ? IMAGES.payment
                         : IMAGES.Home
                     }
                   />

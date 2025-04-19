@@ -57,6 +57,9 @@ import Demo from "../screens/Home/Demo";
 import Inputs from "../screens/Components/Inputs";
 import Bills from "../screens/Bills/Bills";
 import Tickets from "../screens/Tickets/Tickets";
+import BillDetails from "../screens/BillDetails/BillDetails";
+import Profile from "../screens/Profile/Profile";
+
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -74,6 +77,7 @@ const StackNavigator = () => {
         }}>
         {/* <Stack.Screen name="Demo" component={Demo} /> */}
         <Stack.Screen name="Bills" component={Bills} />
+        <Stack.Screen name="BillDetails" component={BillDetails} />
         <Stack.Screen name="Tickets" component={Tickets} />
         <Stack.Screen name="ChooseLanguage" component={ChooseLanguage} />
         <Stack.Screen name="SignUp" component={SignUp} />
@@ -97,13 +101,13 @@ const StackNavigator = () => {
         <Stack.Screen name="Products" component={Products} />
         <Stack.Screen name="ProductsDetails" component={ProductsDetails} />
         <Stack.Screen name="Coupons" component={Coupons} />
+        <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Language" component={Language} />
         <Stack.Screen name="Questions" component={Questions} />
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Singlechat" component={Singlechat} />
         <Stack.Screen name="Call" component={Call} />
-
         <Stack.Screen name="Components" component={Components} />
         <Stack.Screen name="Accordion" component={AccordionScreen} />
         <Stack.Screen name="BottomSheet" component={BottomSheet} />

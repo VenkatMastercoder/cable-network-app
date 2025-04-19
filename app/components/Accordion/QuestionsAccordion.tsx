@@ -24,32 +24,32 @@ const QuestionsAccordion = () => {
             content: 'Package have the JavaScript JS, JavaScript JSON, XML, .apk, .java, JavaScript JSON, .java, .plist, Well Define Documentation, Fonts and Icons, Responsive Designs, Image Assets, Customization Options, and many more.',
         },
         {
-            title: 'What features does cablepilot offer?',
-            content: 'cablepilot offers a wide range of features including responsive design, customizable layouts, product catalog pages, shopping cart functionality, checkout pages, user account management, and more.',
+            title: 'What features does Cable Pilot offer?',
+            content: 'Cable Pilot offers a wide range of features including responsive design, customizable layouts, product catalog pages, shopping cart functionality, checkout pages, user account management, and more.',
 
         },
         {
             title: "Can I customize the template's design?",
-            content: 'Absolutely! cablepilot is built using JSX, which makes it highly customizable. You can easily adjust colors, fonts, layout structures, and more to match your brand identity.',
+            content: 'Absolutely! Cable Pilot is built using JSX, which makes it highly customizable. You can easily adjust colors, fonts, layout structures, and more to match your brand identity.',
 
         },
         {
             title: 'Are there pre-designed page templates included?',
-            content: 'Yes, cablepilot typically includes pre-designed templates for essential pages like the homepage, product listings, product details, shopping cart, checkout, and user account pages.',
+            content: 'Yes, Cable Pilot typically includes pre-designed templates for essential pages like the homepage, product listings, product details, shopping cart, checkout, and user account pages.',
         },
         {
-            title: 'Does cablepilot provide customer support?',
-            content: 'cablepilot offers customer support options for their clients. Check the template documentation or you can directly contact to our support team from here - Click Here',
+            title: 'Does Cable Pilot provide customer support?',
+            content: 'Cable Pilot offers customer support options for their clients. Check the template documentation or you can directly contact to our support team from here - Click Here',
 
         },
         {
-            title: "Is coding knowledge required to use cablepilot?",
-            content: "Basic knowledge of JavaScript JS, XML, and JSX can be helpful for customizing cablepilot to your needs. However, it's designed to be user- friendly and doesn't necessarily require extensive coding skills.",
+            title: "Is coding knowledge required to use Cable Pilot?",
+            content: "Basic knowledge of JavaScript JS, XML, and JSX can be helpful for customizing Cable Pilot to your needs. However, it's designed to be user- friendly and doesn't necessarily require extensive coding skills.",
 
         },
         {
-            title: 'How can I get started with cablepilot?',
-            content: "To get started, purchase and download the cablepilot template. Then, follow the included documentation to set up and customize your e-commerce website based on your specific requirements.",
+            title: 'How can I get started with Cable Pilot?',
+            content: "To get started, purchase and download the Cable Pilot template. Then, follow the included documentation to set up and customize your e-commerce website based on your specific requirements.",
         },
     ];
 

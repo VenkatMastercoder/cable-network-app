@@ -18,10 +18,10 @@ const SelectCountery = () => {
 
   return (
     <View>
-        <CountryButton 
-            onPress={() => setShow(true)}
+        <CountryButton
+            // onPress={() => setShow(true)}
             item={{
-                dial_code: countryCode ? countryCode : "+91", 
+                dial_code: countryCode ? countryCode : "+91",
                 flag: countryflag ? countryflag : "🇮🇳",
             }}
             style={{
@@ -76,7 +76,7 @@ const SelectCountery = () => {
             },
             textInput: {
                 color:COLORS.title
-            },   
+            },
         }}
         />
     </View>

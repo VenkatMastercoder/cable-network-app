@@ -162,7 +162,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                   FONTS.fontRegular,
                   { fontSize: 14, color: colors.title },
                 ]}>
-                By continuing, you agree to cablepilot's{" "}
+                By continuing, you agree to Cable Pilot's{" "}
                 <Text style={[FONTS.fontSemiBold, { color: COLORS.primary }]}>
                   Terms of Use
                 </Text>
@@ -210,6 +210,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
             <Button
               title={"Continue"}
               onPress={() => navigation.navigate("SingIn")}
+              text={COLORS.white}
             />
           </View>
         </View>
