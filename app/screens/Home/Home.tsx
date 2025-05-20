@@ -459,6 +459,14 @@ const Home = ({ navigation }: HomeScreenProps) => {
                     <Text style={{ ...FONTS.fontSm, color: colors.text }}>Expires In</Text>
                     <Text style={{ ...FONTS.h6, color: colors.title }}>{daysLeft(setTopBox.activated_on) > 0 ? daysLeft(setTopBox.activated_on) + " days" : "Expired"}</Text>
                   </View>
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ ...FONTS.fontSm, color: colors.text }}>Balance Remaining</Text>
+                    <Text style={{ ...FONTS.h6, color: colors.title }}>
+                      {daysLeft(setTopBox.activated_on) > 0
+                        ? "₹" + (Math.floor(((plan?.plan_price || 0) / 30) * daysLeft(setTopBox.activated_on))).toFixed(0)
+                        : "₹0"}
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}

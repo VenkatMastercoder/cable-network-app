@@ -1,4 +1,4 @@
-rootProject.name = 'cablepilot'
+rootProject.name = 'Cable Pilot'
 
 dependencyResolutionManagement {
   versionCatalogs {
